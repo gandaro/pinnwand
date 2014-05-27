@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from datetime import timedelta
+from functools import partial
 
 from flask import Flask
 from flask import render_template, url_for, redirect, request
@@ -24,18 +25,18 @@ def paste():
     raw    = request.form["code"]
     expiry = request.form["expiry"]
 
+    # Partial response for the template
+    template = partial(render_template, "new.html", lexer=lexer,
+            lexers=list_languages(), pagetitle="new")
+
     if not lexer:
         lexer = "text"
 
     if not lexer in [pair[0] for pair in list_languages()]:
-        return render_template("new.html", lexer=lexer,
-                   lexers=list_languages(), pagetitle="new",
-                   message="Please don't make up lexers.")
+        return template(message="Please don't make up lexers.")
 
     if not raw:
-        return render_template("new.html", lexer=lexer,
-                   lexers=list_languages(), pagetitle="new",
-                   message="Please don't paste empty pastes.")
+        return template(message="Please don't paste empty pastes.")
 
     expiries = {"1day": timedelta(days=1),
                 "1week": timedelta(days=7),
@@ -43,9 +44,7 @@ def paste():
                 "never": None}
 
     if not expiry in expiries:
-        return render_template("new.html", lexer=lexer,
-                   lexers=list_languages(), pagetitle="new",
-                   message="Please don't make up expiry dates.")
+        return template(message="Please don't make up expiry dates.")
     else:
         expiry = expiries[expiry]
 
