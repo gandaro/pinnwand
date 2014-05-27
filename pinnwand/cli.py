@@ -26,7 +26,7 @@ def main():
 
         if args[0] == "list":
             for paste in session.query(Paste).all():
-                print paste
+                print(paste)
 
         if args[0] == "reap":
             pastes = session.query(Paste).filter(Paste.exp_date < datetime.now()).all()
@@ -35,7 +35,7 @@ def main():
                 session.delete(paste)
             session.commit()
 
-            print "Reaped %s expired pastes" % len(pastes)
+            print("Reaped {} expired pastes".format(len(pastes)))
 
 if __name__ == "__main__":
     main()
