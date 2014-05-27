@@ -4,7 +4,9 @@ import werkzeug
 import datetime
 import os
 import hashlib
+import uuid
 import re
+import sys
 import unicodedata
 import pygments.lexers
 import pygments.formatters
@@ -34,8 +36,8 @@ class HasDates(object):
     chg_date = Column(DateTime)
 
 class Paste(HasDates, Base):
-    paste_id = Column(Integer)
-    removal_id = Column(Integer)
+    paste_id = Column(String)
+    removal_id = Column(String)
 
     lexer = Column(String)
 
@@ -44,13 +46,22 @@ class Paste(HasDates, Base):
 
     exp_date = Column(DateTime)
 
+    def create_hash(self):
+        # XXX This should organically grow as more is used, probably depending
+        # on how often collissions occur.
+        # Aside from that we should never repeat hashes which have been used before
+        # without keeping the pastes in the database.
+        return hashlib.sha224(str(uuid.uuid4())).hexdigest()[:12]
+
     def __init__(self, raw, lexer="text", expiry=datetime.timedelta(days=7)):
         self.pub_date = datetime.datetime.utcnow()
         self.chg_date = datetime.datetime.utcnow()
 
         # Generate a paste_id and a removal_id
-        self.paste_id = random.randint(1, 100000)
-        self.removal_id = random.randint(1, 100000)
+        # Unless someone proves me wrong that I need to check for collisions
+        # my famous last words will be that the odds are astronomically small
+        self.paste_id = self.create_hash()
+        self.removal_id = self.create_hash()
 
         self.raw = raw
 
