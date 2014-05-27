@@ -1,7 +1,14 @@
 {% extends "layout.html" %}
 
 {% block body %}
-  <form action="{{ url_for('index') }}" method="post" class="submitform">
+<h2>New paste at pinnwand</h2>
+{% if message %}
+<div class="quick"><p>{{ message }}</p></div>
+{% else %}
+<br>
+{% endif %}
+
+<form action="{{ url_for('index') }}" method="post" class="submitform">
     <textarea name="code" rows="10" cols="80"></textarea>
     <br>
     <button type="submit">Paste!</button>
@@ -10,6 +17,12 @@
       <option value="{{ key }}"{% if lexer == key
         %} selected="selected"{% endif %}>{{ caption }}</option>
     {% endfor %}
+    </select>
+    <select name="expiry">
+        <option value="1day">1 day</option>
+        <option value="1week">1 week</option>
+        <option value="1month">1 month</option>
+        <option value="never">never</option>
     </select>
   </form>
 {% endblock %}

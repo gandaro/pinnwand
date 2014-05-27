@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from datetime import timedelta
+
 from flask import Flask
 from flask import render_template, url_for, redirect, request
 
@@ -13,18 +15,41 @@ app.debug = True
 @app.route("/", methods=["GET"])
 @app.route("/+<lexer>")
 def index(lexer=""):
-    return render_template("new.html", lexer=lexer, 
+    return render_template("new.html", lexer=lexer,
                lexers=list_languages(), pagetitle="new")
 
 @app.route("/", methods=["POST"])
 def paste():
-    lexer = request.form["lexer"]
-    raw   = request.form["code"]
+    lexer  = request.form["lexer"]
+    raw    = request.form["code"]
+    expiry = request.form["expiry"]
 
     if not lexer:
         lexer = "text"
 
-    paste = Paste(raw, lexer=lexer)
+    if not lexer in [pair[0] for pair in list_languages()]:
+        return render_template("new.html", lexer=lexer,
+                   lexers=list_languages(), pagetitle="new",
+                   message="Please don't make up lexers.")
+
+    if not raw:
+        return render_template("new.html", lexer=lexer,
+                   lexers=list_languages(), pagetitle="new",
+                   message="Please don't paste empty pastes.")
+
+    expiries = {"1day": timedelta(days=1),
+                "1week": timedelta(days=7),
+                "1month": timedelta(days=30),
+                "never": None}
+
+    if not expiry in expiries:
+        return render_template("new.html", lexer=lexer,
+                   lexers=list_languages(), pagetitle="new",
+                   message="Please don't make up expiry dates.")
+    else:
+        expiry = expiries[expiry]
+
+    paste = Paste(raw, lexer=lexer, expiry=expiry)
 
     session.add(paste)
     session.commit()

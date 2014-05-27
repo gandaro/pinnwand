@@ -61,7 +61,10 @@ class Paste(HasDates, Base):
         self.fmt = pygments.highlight(self.raw, lexer, formatter)
 
         # The expires date is the pub_date with the delta of the expiry
-        self.exp_date = self.pub_date + expiry
+        if expiry:
+            self.exp_date = self.pub_date + expiry
+        else:
+            self.exp_date = None
 
     def __repr__(self):
         return "<Paste(paste_id=%s)>" % (self.paste_id,)
