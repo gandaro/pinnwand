@@ -1,19 +1,15 @@
 #!/usr/bin/env python
-import random
 import werkzeug
 import datetime
-import os
 import hashlib
 import uuid
-import re
 import sys
-import unicodedata
 import pygments.lexers
 import pygments.formatters
 
-from sqlalchemy import Integer, Column, String, ForeignKey, Table, DateTime
-from sqlalchemy import Boolean, create_engine, Text
-from sqlalchemy.orm import relationship, Session, backref
+from sqlalchemy import Integer, Column, String, DateTime
+from sqlalchemy import create_engine, Text
+from sqlalchemy.orm import Session, backref
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
 
 engine = create_engine("sqlite:////tmp/pinnwand.sqlite")
