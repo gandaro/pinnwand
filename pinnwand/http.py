@@ -67,10 +67,7 @@ def show(paste_id):
     if not paste:
         return render_template("404.html"), 404
 
-    can_delete = False
-
-    if request.cookies.get("removal") == str(paste.removal_id):
-        can_delete = True
+    can_delete = request.cookies.get("removal") == str(paste.removal_id)
 
     return render_template("show.html", paste=paste, pagetitle="show",
             can_delete=can_delete)
