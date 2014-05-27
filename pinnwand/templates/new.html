@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block body %}
+  <form action="{{ url_for('index') }}" method="post" class="submitform">
+    <textarea name="code" rows="10" cols="80"></textarea>
+    <br>
+    <button type="submit">Paste!</button>
+    <select name="lexer">
+    {% for key, caption in lexers %}
+      <option value="{{ key }}"{% if lexer == key
+        %} selected="selected"{% endif %}>{{ caption }}</option>
+    {% endfor %}
+    </select>
+  </form>
+{% endblock %}

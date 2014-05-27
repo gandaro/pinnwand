@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+  <head>
+    <title>{{ pagetitle }} at pinnwand</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='reset-min.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='pinnwand.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='p-default.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='print.css') }}" type="text/css" media="print">
+  </head>
+  <body>
+      <h1><a href="{{ url_for('index') }}">pinnwand</a></h1>
+      <div id="content-area">
+          <ul id="navigation">
+            <li{% if active_page == id %} class="active"{% endif %}>
+              <a href="{{ url_for('index') }}">new</a>
+            </li>
+          </ul>
+          <div class="content">
+           {% block body %}{% endblock -%}
+            <div class="footer">
+                Powered by <a href="http://buffer.io/+pinnwand/">pinnwand</a>.
+            <a href="/removal/">Paste removal</a>.
+            </div>
+          </div>
+      </div>
+  </body>
+</html>
+
