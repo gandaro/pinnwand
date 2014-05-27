@@ -90,4 +90,4 @@ def removal():
     return render_template("removal.html", pagetitle="removal")
 
 if __name__ == "__main__":
-    app.run();
+    app.run()
