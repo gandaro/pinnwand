@@ -13,7 +13,7 @@
     <br>
     <button type="submit">Paste!</button>
     <select name="lexer">
-    {% for key, caption in lexers %}
+    {% for key, caption in lexers.iteritems() %}
       <option value="{{ key }}"{% if lexer == key
         %} selected="selected"{% endif %}>{{ caption }}</option>
     {% endfor %}

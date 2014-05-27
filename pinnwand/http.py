@@ -25,14 +25,16 @@ def paste():
     raw    = request.form["code"]
     expiry = request.form["expiry"]
 
+    lexers = list_languages()
+
     # Partial response for the template
     template = partial(render_template, "new.html", lexer=lexer,
-            lexers=list_languages(), pagetitle="new")
+            lexers=lexers, pagetitle="new")
 
     if not lexer:
         lexer = "text"
 
-    if not lexer in [pair[0] for pair in list_languages()]:
+    if not lexer in lexers:
         return template(message="Please don't make up lexers.")
 
     if not raw:
