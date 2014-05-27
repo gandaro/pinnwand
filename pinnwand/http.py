@@ -67,8 +67,6 @@ def show(paste_id):
 
     can_delete = False
 
-    print request.cookies.get("removal"), paste.removal_id
-
     if request.cookies.get("removal") == str(paste.removal_id):
         can_delete = True
 
