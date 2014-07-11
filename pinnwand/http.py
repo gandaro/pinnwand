@@ -13,6 +13,36 @@ app = Flask(__name__)
 
 app.debug = True
 
+class ValidationException(ValueError):
+    def __init__(self, fields):
+        self.fields = fields
+
+def do_paste(raw=None, lexer="text", expiry="1week"):
+    lexers = list_languages()
+    errors = []
+
+    if not lexer in lexers:
+        errors.append("lexer")
+
+    if not raw:
+        errors.append("raw")
+
+    expiries = {"1day": timedelta(days=1),
+                "1week": timedelta(days=7),
+                "1month": timedelta(days=30),
+                "never": None}
+
+    if not expiry in expiries:
+        errors.append("expiry")
+        return template(message="Please don't make up expiry dates.")
+    else:
+        expiry = expiries[expiry]
+
+    if errors:
+        raise ValidationException(errors)
+    else:
+        return Paste(raw, lexer=lexer, expiry=expiry)
+
 @app.route("/", methods=["GET"])
 @app.route("/+<lexer>")
 def index(lexer=""):
@@ -25,32 +55,13 @@ def paste():
     raw    = request.form["code"]
     expiry = request.form["expiry"]
 
-    lexers = list_languages()
-
-    # Partial response for the template
     template = partial(render_template, "new.html", lexer=lexer,
-            lexers=lexers, pagetitle="new")
+            lexers=list_languages(), pagetitle="new")
 
-    if not lexer:
-        lexer = "text"
-
-    if not lexer in lexers:
-        return template(message="Please don't make up lexers.")
-
-    if not raw:
-        return template(message="Please don't paste empty pastes.")
-
-    expiries = {"1day": timedelta(days=1),
-                "1week": timedelta(days=7),
-                "1month": timedelta(days=30),
-                "never": None}
-
-    if not expiry in expiries:
-        return template(message="Please don't make up expiry dates.")
-    else:
-        expiry = expiries[expiry]
-
-    paste = Paste(raw, lexer=lexer, expiry=expiry)
+    try:
+        paste = do_paste(raw, lexer, expiry)
+    except ValidationException:
+        return template(message="It didn't validate!")
 
     session.add(paste)
     session.commit()
@@ -87,6 +98,10 @@ def remove(removal_id):
 @app.route("/removal")
 def removal():
     return render_template("removal.html", pagetitle="removal")
+
+@app.route("/api/create", methods=["POST"])
+def api_paste():
+    return
 
 if __name__ == "__main__":
     app.run()
