@@ -3,7 +3,7 @@ from datetime import timedelta
 from functools import partial
 
 from flask import Flask
-from flask import render_template, url_for, redirect, request
+from flask import render_template, url_for, redirect, request, make_response
 
 from pinnwand.models import Paste
 from pinnwand.models import session
@@ -82,6 +82,18 @@ def show(paste_id):
 
     return render_template("show.html", paste=paste, pagetitle="show",
             can_delete=can_delete)
+
+@app.route("/raw/<paste_id>")
+def raw(paste_id):
+    paste = session.query(Paste).filter(Paste.paste_id == paste_id).first()
+
+    if not paste:
+        return render_template("404.html"), 404
+
+    response = make_response(paste.raw)
+    response.headers["content-type"] = "text/plain"
+
+    return response
 
 @app.route("/remove/<removal_id>")
 def remove(removal_id):
