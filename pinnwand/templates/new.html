@@ -1,15 +1,13 @@
 {% extends "layout.html" %}
 
 {% block body %}
-<h2>New paste at pinnwand</h2>
 {% if message %}
 <div class="quick"><p>{{ message }}</p></div>
 {% else %}
-<br>
 {% endif %}
 
 <form action="{{ url_for('index') }}" method="post" class="submitform">
-    <textarea name="code" rows="10" cols="80"></textarea>
+    <textarea name="code"></textarea>
     <br>
     <button type="submit">Paste!</button>
     <select name="lexer">
