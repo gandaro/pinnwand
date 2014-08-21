@@ -17,7 +17,7 @@ class ValidationException(ValueError):
     def __init__(self, fields):
         self.fields = fields
 
-def do_paste(raw=None, lexer="text", expiry="1week"):
+def do_paste(raw=None, lexer="text", expiry="1week", src="web"):
     lexers = list_languages()
     errors = []
 
@@ -41,7 +41,7 @@ def do_paste(raw=None, lexer="text", expiry="1week"):
     if errors:
         raise ValidationException(errors)
     else:
-        return Paste(raw, lexer=lexer, expiry=expiry)
+        return Paste(raw, lexer=lexer, expiry=expiry, src=src)
 
 @app.route("/", methods=["GET"])
 @app.route("/+<lexer>")

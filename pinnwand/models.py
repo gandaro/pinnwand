@@ -39,6 +39,7 @@ class Paste(HasDates, Base):
 
     raw = Column(Text)
     fmt = Column(Text)
+    src = Column(String)
 
     exp_date = Column(DateTime)
 
@@ -49,7 +50,7 @@ class Paste(HasDates, Base):
         # without keeping the pastes in the database.
         return hashlib.sha224(str(uuid.uuid4())).hexdigest()[:12]
 
-    def __init__(self, raw, lexer="text", expiry=datetime.timedelta(days=7)):
+    def __init__(self, raw, lexer="text", expiry=datetime.timedelta(days=7), src="web"):
         self.pub_date = datetime.datetime.utcnow()
         self.chg_date = datetime.datetime.utcnow()
 
@@ -60,6 +61,8 @@ class Paste(HasDates, Base):
         self.removal_id = self.create_hash()
 
         self.raw = raw
+
+        self.src = src
 
         lexer = pygments.lexers.get_lexer_by_name(lexer)
         formatter = pygments.formatters.HtmlFormatter(linenos=True,
