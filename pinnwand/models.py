@@ -32,14 +32,14 @@ class HasDates(object):
     chg_date = Column(DateTime)
 
 class Paste(HasDates, Base):
-    paste_id = Column(String)
-    removal_id = Column(String)
+    paste_id = Column(String(250))
+    removal_id = Column(String(250))
 
-    lexer = Column(String)
+    lexer = Column(String(250))
 
     raw = Column(Text)
     fmt = Column(Text)
-    src = Column(String)
+    src = Column(String(250))
 
     exp_date = Column(DateTime)
 
