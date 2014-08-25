@@ -13,6 +13,10 @@ app = Flask(__name__)
 
 app.debug = True
 
+@app.teardown_appcontext
+def teardown_session(response):
+    session.remove()
+
 class ValidationException(ValueError):
     def __init__(self, fields):
         self.fields = fields
@@ -116,4 +120,4 @@ def api_paste():
     return
 
 if __name__ == "__main__":
-    app.run()
+    app.run("0.0.0.0", 5000)

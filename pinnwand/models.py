@@ -9,11 +9,13 @@ import pygments.formatters
 
 from sqlalchemy import Integer, Column, String, DateTime
 from sqlalchemy import create_engine, Text
-from sqlalchemy.orm import Session, backref
+from sqlalchemy.orm import backref, sessionmaker, scoped_session
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
 
 engine = create_engine("sqlite:////tmp/pinnwand.sqlite")
-session = Session(engine)
+session = scoped_session(sessionmaker(autocommit=False,
+                                      autoflush=False,
+                                      bind=engine))
 
 class Base(object):
     """Base class which provides automated table names
