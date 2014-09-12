@@ -55,10 +55,7 @@ def index(lexer=""):
                lexers=list_languages(), pagetitle="new")
 
 @app.route("/", methods=["POST"])
-@app.route("/json", methods=["POST"], defaults={"wants_json": True})
-def paste(wants_json=False):
-    print request.form
-
+def paste():
     lexer  = request.form["lexer"]
     raw    = request.form["code"]
     expiry = request.form["expiry"]
@@ -74,13 +71,8 @@ def paste(wants_json=False):
     session.add(paste)
     session.commit()
 
-    if wants_json:
-        response = make_response(json.dumps({"paste_id": paste.paste_id,
-                                            "removal_id": paste.removal_id}))
-        response.headers["content-type"] = "application/json"
-    else:
-        response = redirect(url_for("show", paste_id=paste.paste_id))
-        response.set_cookie("removal", str(paste.removal_id), path=url_for("show", paste_id=paste.paste_id))
+    response = redirect(url_for("show", paste_id=paste.paste_id))
+    response.set_cookie("removal", str(paste.removal_id), path=url_for("show", paste_id=paste.paste_id))
 
     return response
 
@@ -124,6 +116,60 @@ def remove(removal_id):
 @app.route("/removal")
 def removal():
     return render_template("removal.html", pagetitle="removal")
+
+
+
+@app.route("/json/show/<paste_id>")
+def show_json(paste_id):
+    paste = session.query(Paste).filter(Paste.paste_id == paste_id).first()
+
+    if not paste:
+        return "not found", 404
+
+    response = make_response(json.dumps({"paste_id": paste.paste_id,
+                                         "raw": paste.raw,
+                                         "fmt": paste.fmt,
+                                         "lexer": paste.lexer,
+                                         "expiry": paste.exp_date.isoformat()}))
+    response.headers["content-type"] = "application/json"
+
+    return response
+
+@app.route("/json/new", methods=["POST"])
+def paste_json():
+    lexer  = request.form["lexer"]
+    raw    = request.form["code"]
+    expiry = request.form["expiry"]
+
+    try:
+        paste = do_paste(raw, lexer, expiry, "json")
+    except ValidationException:
+        return template(message="It didn't validate!")
+
+    session.add(paste)
+    session.commit()
+
+    response = make_response(json.dumps({"paste_id": paste.paste_id,
+                                         "removal_id": paste.removal_id}))
+    response.headers["content-type"] = "application/json"
+
+    return response
+
+@app.route("/json/remove", methods=["POST"])
+def remove_json():
+    paste = session.query(Paste).filter(Paste.removal_id == request.form["removal_id"]).first()
+
+    if not paste:
+        return "not found", 404
+
+    session.delete(paste)
+    session.commit()
+
+    response = make_response(json.dumps([{"paste_id": paste.paste_id, "status": "removed"}]))
+    response.headers["content-type"] = "application/json"
+
+
+    return response
 
 if __name__ == "__main__":
     app.run("0.0.0.0", 5000)
