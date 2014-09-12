@@ -12,8 +12,7 @@ from pinnwand.models import session
 from pinnwand.helpers import list_languages
 
 app = Flask(__name__)
-
-app.debug = True
+app.config.from_object("pinnwand.settings")
 
 @app.teardown_appcontext
 def teardown_session(response):
