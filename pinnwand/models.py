@@ -12,7 +12,9 @@ from sqlalchemy import create_engine, Text
 from sqlalchemy.orm import backref, sessionmaker, scoped_session
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
 
-engine = create_engine("sqlite:////tmp/pinnwand.sqlite")
+from pinnwand.settings import *
+
+engine = create_engine(DATABASE_URI)
 session = scoped_session(sessionmaker(autocommit=False,
                                       autoflush=False,
                                       bind=engine))
