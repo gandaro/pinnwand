@@ -8,6 +8,7 @@ Prerequisites
 =============
 flask
 sqlalchemy
+pygments
 
 Usage
 =====

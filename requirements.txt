@@ -1,13 +1,3 @@
-Flask==0.10.1
-Jinja2==2.7.2
-MarkupSafe==0.23
-Pygments==1.6
-SQLAlchemy==0.9.4
-Werkzeug==0.9.4
-argparse==1.2.1
-bpython==0.13
-curtsies==0.0.32
-distribute==0.6.24
-greenlet==0.4.2
-itsdangerous==0.24
-wsgiref==0.1.2
+flask
+pygments
+sqlalchemy
