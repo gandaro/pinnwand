@@ -43,6 +43,28 @@ textarea, #paste {
     overflow-x: scroll;
 }
 
+#page {
+    background: #fff;
+    font-family: sans-serif;
+    min-height: auto;
+    padding: 2em;
+    width: 50%;
+}
+
+#page h2 {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+#page p {
+    font-size: .85em;
+    line-height: 1.5em;
+}
+
+#page p, #page h2 {
+    margin: 0 0 1em 0;
+}
+
 .linenos {
     background: #eee;
     color: #aaa;
