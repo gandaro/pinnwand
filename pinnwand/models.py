@@ -66,6 +66,8 @@ class Paste(HasDates, Base):
 
         self.src = src
 
+        self.lexer = lexer
+
         lexer = pygments.lexers.get_lexer_by_name(lexer)
         formatter = pygments.formatters.HtmlFormatter(linenos=True,
                 cssclass="source")
