@@ -1,5 +1,6 @@
 html {
     background: #eee;
+    color: #000;
 }
 
 body {
@@ -32,6 +33,7 @@ article {
 textarea, #paste {
     background: #fff;
     border: none;
+    color: #000;
     font-family: monospace;
     resize: none;
     padding: 2em;
