@@ -39,6 +39,10 @@ textarea, #paste {
     width: 100%;
 }
 
+#paste {
+    overflow-x: scroll;
+}
+
 .linenos {
     background: #eee;
     color: #aaa;
