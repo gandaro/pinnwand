@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+import json
+
 from datetime import timedelta
 from functools import partial
 
@@ -54,7 +56,10 @@ def index(lexer=""):
                lexers=list_languages(), pagetitle="new")
 
 @app.route("/", methods=["POST"])
-def paste():
+@app.route("/json", methods=["POST"], defaults={"wants_json": True})
+def paste(wants_json=False):
+    print request.form
+
     lexer  = request.form["lexer"]
     raw    = request.form["code"]
     expiry = request.form["expiry"]
@@ -70,10 +75,16 @@ def paste():
     session.add(paste)
     session.commit()
 
-    response = redirect(url_for("show", paste_id=paste.paste_id))
-    response.set_cookie("removal", str(paste.removal_id), path=url_for("show", paste_id=paste.paste_id))
+    if wants_json:
+        response = make_response(json.dumps({"paste_id": paste.paste_id,
+                                            "removal_id": paste.removal_id}))
+        response.headers["content-type"] = "application/json"
+    else:
+        response = redirect(url_for("show", paste_id=paste.paste_id))
+        response.set_cookie("removal", str(paste.removal_id), path=url_for("show", paste_id=paste.paste_id))
 
     return response
+
 
 @app.route("/show/<paste_id>")
 def show(paste_id):
@@ -114,10 +125,6 @@ def remove(removal_id):
 @app.route("/removal")
 def removal():
     return render_template("removal.html", pagetitle="removal")
-
-@app.route("/api/create", methods=["POST"])
-def api_paste():
-    return
 
 if __name__ == "__main__":
     app.run("0.0.0.0", 5000)
