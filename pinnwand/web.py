@@ -97,7 +97,7 @@ def raw(paste_id):
         return render_template("404.html"), 404
 
     response = make_response(paste.raw)
-    response.headers["content-type"] = "text/plain"
+    response.headers["content-type"] = "text/plain; charset=utf-8"
 
     return response
 
