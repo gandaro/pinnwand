@@ -117,8 +117,6 @@ def remove(removal_id):
 def removal():
     return render_template("removal.html", pagetitle="removal")
 
-
-
 @app.route("/json/show/<paste_id>")
 def show_json(paste_id):
     paste = session.query(Paste).filter(Paste.paste_id == paste_id).first()
@@ -144,7 +142,7 @@ def paste_json():
     try:
         paste = do_paste(raw, lexer, expiry, "json")
     except ValidationException:
-        return template(message="It didn't validate!")
+        return "it didn't validate", 500
 
     session.add(paste)
     session.commit()
