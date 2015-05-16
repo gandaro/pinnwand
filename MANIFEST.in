@@ -1,0 +1,2 @@
+recursive-include pinnwand/templates *
+recursive-include pinnwand/static *
