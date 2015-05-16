@@ -1,9 +1,10 @@
 #!/usr/bin/env python
-import werkzeug
+import binascii
 import datetime
-import hashlib
-import uuid
+import os
 import sys
+
+import werkzeug
 import pygments.lexers
 import pygments.formatters
 
@@ -52,7 +53,7 @@ class Paste(HasDates, Base):
         # on how often collissions occur.
         # Aside from that we should never repeat hashes which have been used before
         # without keeping the pastes in the database.
-        return hashlib.sha224(str(uuid.uuid4())).hexdigest()[:12]
+        return binascii.hexlify(os.urandom(6)).decode('ascii')
 
     def __init__(self, raw, lexer="text", expiry=datetime.timedelta(days=7), src="web"):
         self.pub_date = datetime.datetime.utcnow()
