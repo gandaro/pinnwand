@@ -39,7 +39,6 @@ def do_paste(raw=None, lexer="text", expiry="1week", src="web"):
 
     if not expiry in expiries:
         errors.append("expiry")
-        return template(message="Please don't make up expiry dates.")
     else:
         expiry = expiries[expiry]
 
