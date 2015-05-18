@@ -29,7 +29,7 @@ def main():
                 print(paste)
 
         if args[0] == "reap":
-            pastes = session.query(Paste).filter(Paste.exp_date < datetime.now()).all()
+            pastes = session.query(Paste).filter(Paste.exp_date < datetime.utcnow()).all()
 
             for paste in pastes:
                 session.delete(paste)
